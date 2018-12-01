@@ -3,6 +3,49 @@ from sc2 import run_game, maps, Race, Difficulty
 from sc2.constants import *
 from sc2.player import Bot, Computer
 
+class Connection:
+	pass
+class Neuron():
+	def __init__(self, connections):
+		self._connections = connections
+	def fire(self):
+		if (self._has_fired == True):
+			return
+		if (self._connections is None):
+			return
+		self._has_fired = True
+		# for __connection in self._connections:
+		self._connections.fire()
+
+	def add_weight(self, weight):
+		self._accumulated_weight += weight
+		if (weight >= 50):
+			self.fire()
+
+	_accumulated_weight = 0
+	_has_fired = False
+	_connections = []
+
+class Connection():
+	def __init__(self, connected_neuron):
+		self._connected_neuron = connected_neuron  
+	def fire(self):
+		self._connected_neuron.add_weight(self._weight)
+	_weight = 0.5
+	_connected_neuron = Neuron(None)
+
+output_neuron = Neuron(None)
+new_connection = Connection(output_neuron)
+
+connections = []
+connections.append(new_connection)
+
+input_neuron_connections = connections
+input_neuron = Neuron(new_connection)
+
+input_neuron.fire()
+
+print ("Output neuron has a", output_neuron._accumulated_weight * 100, "% chance of being true.")
 
 
 
