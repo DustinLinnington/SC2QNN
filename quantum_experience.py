@@ -13,3 +13,19 @@ job = qiskit.execute(program, backend)
 # job = qiskit.execute(program, qiskit.Aer.get_backend('qasm_simulator'))
 
 print(job.result().get_counts())
+
+# USING A DICTIONARY TO CREATE THE PROGRAM
+# Q_SPECS = {
+#     "name": "Program-tutorial",
+#     "circuits": [{
+#          "name": "Circuit",
+#          "quantum_registers": [{
+#              "name":"qr",
+#              "size": 4 
+#          }],
+#          "classical_registers": [{
+#               "name":"cr",
+#               "size": 4
+#          }]}],
+# }
+# Q_program = QuantumProgram(specs=Q_SPECS) 

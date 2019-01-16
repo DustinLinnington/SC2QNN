@@ -1,0 +1,265 @@
+{
+	"Input Layer": {
+		"Layer Depth": 1,
+		"Neuron Layer IDs": {
+			"0": [0]
+		}
+	},
+	"Hidden Layers": {
+		"Layer Width": 3,
+		"Layer Depth": 5,
+		"Neuron Layer IDs": {
+			"0": [1, 2, 3, 4, 5],
+			"1": [6, 7, 8, 9, 10],
+			"2": [11, 12, 13, 14, 15]
+		}
+	},
+	"Output Layer": {
+		"Layer Depth": 1,
+		"Neuron Layer IDs": {
+			"0": [16]
+		}
+	},
+	"Connections": {
+		"0": {
+			"Weight": 1,
+			"Connected Neurons": [0, 1]
+		},
+		"1": {
+			"Weight": 1,
+			"Connected Neurons": [0, 2]
+		},
+		"2": {
+			"Weight": 1,
+			"Connected Neurons": [0, 3]
+		},
+		"3": {
+			"Weight": 1,
+			"Connected Neurons": [0, 4]
+		},
+		"4": {
+			"Weight": 1,
+			"Connected Neurons": [0, 5]
+		},
+		"5": {
+			"Weight": 1,
+			"Connected Neurons": [1, 6]
+		},
+		"6": {
+			"Weight": 1,
+			"Connected Neurons": [2, 6]
+		},
+		"7": {
+			"Weight": 1,
+			"Connected Neurons": [3, 6]
+		},
+		"8": {
+			"Weight": 1,
+			"Connected Neurons": [4, 6]
+		},
+		"9": {
+			"Weight": 1,
+			"Connected Neurons": [5, 6]
+		},
+		"10": {
+			"Weight": 1,
+			"Connected Neurons": [1, 7]
+		},
+		"11": {
+			"Weight": 1,
+			"Connected Neurons": [2, 7]
+		},
+		"12": {
+			"Weight": 1,
+			"Connected Neurons": [3, 7]
+		},
+		"13": {
+			"Weight": 1,
+			"Connected Neurons": [4, 7]
+		},
+		"14": {
+			"Weight": 1,
+			"Connected Neurons": [5, 7]
+		},
+		"15": {
+			"Weight": 1,
+			"Connected Neurons": [1, 8]
+		},
+		"16": {
+			"Weight": 1,
+			"Connected Neurons": [2, 8]
+		},
+		"17": {
+			"Weight": 1,
+			"Connected Neurons": [3, 8]
+		},
+		"18": {
+			"Weight": 1,
+			"Connected Neurons": [4, 8]
+		},
+		"19": {
+			"Weight": 1,
+			"Connected Neurons": [5, 8]
+		},
+		"20": {
+			"Weight": 1,
+			"Connected Neurons": [1, 9]
+		},
+		"21": {
+			"Weight": 1,
+			"Connected Neurons": [2, 9]
+		},
+		"22": {
+			"Weight": 1,
+			"Connected Neurons": [3, 9]
+		},
+		"23": {
+			"Weight": 1,
+			"Connected Neurons": [4, 9]
+		},
+		"24": {
+			"Weight": 1,
+			"Connected Neurons": [5, 9]
+		},
+		"25": {
+			"Weight": 1,
+			"Connected Neurons": [1, 10]
+		},
+		"26": {
+			"Weight": 1,
+			"Connected Neurons": [2, 10]
+		},
+		"27": {
+			"Weight": 1,
+			"Connected Neurons": [3, 10]
+		},
+		"28": {
+			"Weight": 1,
+			"Connected Neurons": [4, 10]
+		},
+		"29": {
+			"Weight": 1,
+			"Connected Neurons": [5, 10]
+		},
+		"30": {
+			"Weight": 1,
+			"Connected Neurons": [6, 11]
+		},
+		"31": {
+			"Weight": 1,
+			"Connected Neurons": [7, 11]
+		},
+		"32": {
+			"Weight": 1,
+			"Connected Neurons": [8, 11]
+		},
+		"33": {
+			"Weight": 1,
+			"Connected Neurons": [9, 11]
+		},
+		"34": {
+			"Weight": 1,
+			"Connected Neurons": [10, 11]
+		},
+		"35": {
+			"Weight": 1,
+			"Connected Neurons": [6, 12]
+		},
+		"36": {
+			"Weight": 1,
+			"Connected Neurons": [7, 12]
+		},
+		"37": {
+			"Weight": 1,
+			"Connected Neurons": [8, 12]
+		},
+		"38": {
+			"Weight": 1,
+			"Connected Neurons": [9, 12]
+		},
+		"39": {
+			"Weight": 1,
+			"Connected Neurons": [10, 12]
+		},
+		"40": {
+			"Weight": 1,
+			"Connected Neurons": [6, 13]
+		},
+		"41": {
+			"Weight": 1,
+			"Connected Neurons": [7, 13]
+		},
+		"42": {
+			"Weight": 1,
+			"Connected Neurons": [8, 13]
+		},
+		"43": {
+			"Weight": 1,
+			"Connected Neurons": [9, 13]
+		},
+		"44": {
+			"Weight": 1,
+			"Connected Neurons": [10, 13]
+		},
+		"45": {
+			"Weight": 1,
+			"Connected Neurons": [6, 14]
+		},
+		"46": {
+			"Weight": 1,
+			"Connected Neurons": [7, 14]
+		},
+		"47": {
+			"Weight": 1,
+			"Connected Neurons": [8, 14]
+		},
+		"48": {
+			"Weight": 1,
+			"Connected Neurons": [9, 14]
+		},
+		"49": {
+			"Weight": 1,
+			"Connected Neurons": [10, 14]
+		},
+		"50": {
+			"Weight": 1,
+			"Connected Neurons": [6, 15]
+		},
+		"51": {
+			"Weight": 1,
+			"Connected Neurons": [7, 15]
+		},
+		"52": {
+			"Weight": 1,
+			"Connected Neurons": [8, 15]
+		},
+		"53": {
+			"Weight": 1,
+			"Connected Neurons": [9, 15]
+		},
+		"54": {
+			"Weight": 1,
+			"Connected Neurons": [10, 15]
+		},
+		"55": {
+			"Weight": 1,
+			"Connected Neurons": [11, 16]
+		},
+		"56": {
+			"Weight": 1,
+			"Connected Neurons": [12, 16]
+		},
+		"57": {
+			"Weight": 1,
+			"Connected Neurons": [13, 16]
+		},
+		"58": {
+			"Weight": 1,
+			"Connected Neurons": [14, 16]
+		},
+		"59": {
+			"Weight": 1,
+			"Connected Neurons": [15, 16]
+		}
+	}
+}
