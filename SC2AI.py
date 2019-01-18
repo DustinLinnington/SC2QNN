@@ -159,6 +159,7 @@ class Neuron():
 	def __init__(self):
 		self._accumulated_weight = 0
 		self._threshold = 1
+		self._bias = 0
 		self._has_fired = False
 		self._outgoing_connections = []
 		self._incoming_connections = []
