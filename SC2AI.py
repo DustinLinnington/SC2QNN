@@ -164,6 +164,7 @@ class Neuron():
 		self._outgoing_connections = []
 		self._incoming_connections = []
 		self._id = Neuron.last_id + 1
+		self._connected_neurons_fired = 0
 
 		Neuron.update_id(self)
 
@@ -179,10 +180,19 @@ class Neuron():
 		for connection in self._outgoing_connections:
 			connection.fire()
 
+	## Step-based activation function
+	# def add_weight(self, weight):
+	# 	self._accumulated_weight += weight
+	# 	if (self._accumulated_weight >= self._threshold):
+	# 		self.fire()
+
 	def add_weight(self, weight):
 		self._accumulated_weight += weight
-		if (self._accumulated_weight >= self._threshold):
-			self.fire()
+		self._connected_neurons_fired += 1
+		if (self._connected_neurons_fired >= len(self._incoming_connections)):
+			if (self._accumulated_weight + self._bias >= 0):
+				self.fire()
+
 
 	def add_outgoing_connection(self, connection):
 		if (connection not in self._outgoing_connections):
