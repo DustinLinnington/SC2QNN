@@ -187,16 +187,16 @@ class Neuron():
 	# 	if (self._accumulated_weight >= self._threshold):
 	# 		self.fire()
 
+	# Sigmoid-based activation function
 	def add_weight(self, weight):
 		self._accumulated_weight += weight
 		self._connected_neurons_fired += 1
 		if (self._connected_neurons_fired >= len(self._incoming_connections)):
-			if get_sigma(self._accumulated_weight + self._bias) >= 0.5:
+			if self.get_sigma(self._accumulated_weight + self._bias) >= 0.5:
 				self.fire()
 
-	# For Sigma-based activation function
-	def get_sigma(_accumulated_weight):
-		return 1 / (1+math.exp(-_accumlated_weight))
+	def get_sigma(self, _accumulated_weight):
+		return 1 / (1 + math.exp(-_accumulated_weight))
 
 	def add_outgoing_connection(self, connection):
 		if (connection not in self._outgoing_connections):
@@ -234,6 +234,8 @@ class Connection():
 
 # neuralNet.save_neural_net("Stuxtnet.txt")
 neuralNet = NeuralNetwork.load_neural_net("Stuxtnet.txt")
+neuralNet._input_layer[0].fire()
+print(neuralNet._output_layer[0]._accumulated_weight)
 
 # class ZerglingRush(sc2.BotAI):
 # 	def __init__(self):
