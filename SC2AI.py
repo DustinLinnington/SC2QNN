@@ -5,6 +5,7 @@
 # from IBMQuantumExperience import IBMQuantumExperience
 # import qiskit
 import json
+import math
 
 class NeuralNetwork():
 	_input_layer = []
@@ -190,9 +191,12 @@ class Neuron():
 		self._accumulated_weight += weight
 		self._connected_neurons_fired += 1
 		if (self._connected_neurons_fired >= len(self._incoming_connections)):
-			if (self._accumulated_weight + self._bias >= 0):
+			if get_sigma(self._accumulated_weight + self._bias) >= 0.5:
 				self.fire()
 
+	# For Sigma-based activation function
+	def get_sigma(_accumulated_weight):
+		return 1 / (1+math.exp(-_accumlated_weight))
 
 	def add_outgoing_connection(self, connection):
 		if (connection not in self._outgoing_connections):
