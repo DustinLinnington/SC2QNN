@@ -17,6 +17,7 @@ class NeuralNetwork():
 	_hidden_layer_width = 0
 	_hidden_layer_depth = 0
 	_output_layer_depth = 0
+
 	def __init__(self, input_layer_depth, hidden_layer_width, hidden_layer_depth, output_layer_depth):
 		self._input_layer_depth = input_layer_depth
 		self._hidden_layer_width = hidden_layer_width
@@ -29,6 +30,24 @@ class NeuralNetwork():
 		self._connections = []
 		self._neurons = []
 
+	def get_training_data(filename):
+		with open(filename, "r") as read_file:
+			data = json.load(read_file)
+
+		training_input_layer = []
+		training_output_layer = []
+
+		for input_neuron in data["Input Layer"]:
+			training_input_layer.append(data["Input Layer"][str(input_neuron)])
+
+		for output_neuron in data["Output Layer"]:
+			training_output_layer.append(data["Output Layer"][str(output_neuron)])
+
+		training_data = dict()
+		training_data["Input Data"] = training_input_layer
+		training_data["Output Data"] = training_output_layer
+		return training_data
+		
 	def load_neural_net(filename):
 		input_layer_depth = 0
 		hidden_layer_width = 0
