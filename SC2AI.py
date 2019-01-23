@@ -31,23 +31,27 @@ class NeuralNetwork():
 		self._neurons = []
 
 	def get_training_data(filename):
+		training_data_inputs = []
+		training_data_outputs = []
+		training_data = dict()
+
 		with open(filename, "r") as read_file:
 			data = json.load(read_file)
+			for dataset in data["Datasets"]:
+				training_input_layer = []
+				training_output_layer = []
+				for input_neuron in data["Datasets"][dataset]["Inputs"]:
+					training_input_layer.append(input_neuron)
+				for output_neuron in data["Datasets"][dataset]["Outputs"]:
+					training_output_layer.append(output_neuron)
 
-		training_input_layer = []
-		training_output_layer = []
+				training_data_inputs.append(training_input_layer)
+				training_data_outputs.append(training_output_layer)
 
-		for input_neuron in data["Input Layer"]:
-			training_input_layer.append(data["Input Layer"][str(input_neuron)])
-
-		for output_neuron in data["Output Layer"]:
-			training_output_layer.append(data["Output Layer"][str(output_neuron)])
-
-		training_data = dict()
-		training_data["Input Data"] = training_input_layer
-		training_data["Output Data"] = training_output_layer
+		training_data["InputData"] = training_data_inputs
+		training_data["OutputData"] = training_data_outputs
 		return training_data
-		
+
 	def load_neural_net(filename):
 		input_layer_depth = 0
 		hidden_layer_width = 0
@@ -252,9 +256,11 @@ class Connection():
 # neuralNet.initiate_neural_network(True)
 
 # neuralNet.save_neural_net("Stuxtnet.txt")
-neuralNet = NeuralNetwork.load_neural_net("Stuxtnet.txt")
-neuralNet._input_layer[0].fire()
-print(neuralNet._output_layer[0]._accumulated_weight)
+# neuralNet = NeuralNetwork.load_neural_net("Stuxtnet.txt")
+# neuralNet._input_layer[0].fire()
+
+training_data = NeuralNetwork.get_training_data("training_data.txt")
+print(training_data)
 
 # class ZerglingRush(sc2.BotAI):
 # 	def __init__(self):
