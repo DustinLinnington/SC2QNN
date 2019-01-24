@@ -252,7 +252,6 @@ class Connection():
 	_originating_neuron = None
 	_connected_neuron = None
 
-# neuralNet = NeuralNetwork(1, 3, 5, 1)
 # neuralNet.initiate_neural_network(True)
 
 # neuralNet.save_neural_net("Stuxtnet.txt")
@@ -260,8 +259,11 @@ class Connection():
 # neuralNet._input_layer[0].fire()
 
 training_data = NeuralNetwork.get_training_data("training_data.txt")
-print(training_data)
+input_layer_depth = len(training_data["InputData"][0])
+output_layer_depth = len(training_data["OutputData"][0])
+neuralNet = NeuralNetwork(input_layer_depth, 3, 5, output_layer_depth)
 
+print(input_layer_depth, output_layer_depth)
 # class ZerglingRush(sc2.BotAI):
 # 	def __init__(self):
 # 		self.drone_counter = 0
