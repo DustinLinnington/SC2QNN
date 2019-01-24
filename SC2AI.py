@@ -37,16 +37,17 @@ class NeuralNetwork():
 
 		with open(filename, "r") as read_file:
 			data = json.load(read_file)
-			for dataset in data["Datasets"]:
-				training_input_layer = []
-				training_output_layer = []
-				for input_neuron in data["Datasets"][dataset]["Inputs"]:
-					training_input_layer.append(input_neuron)
-				for output_neuron in data["Datasets"][dataset]["Outputs"]:
-					training_output_layer.append(output_neuron)
 
-				training_data_inputs.append(training_input_layer)
-				training_data_outputs.append(training_output_layer)
+		for dataset in data["Datasets"]:
+			training_input_layer = []
+			training_output_layer = []
+			for input_neuron in data["Datasets"][dataset]["Inputs"]:
+				training_input_layer.append(input_neuron)
+			for output_neuron in data["Datasets"][dataset]["Outputs"]:
+				training_output_layer.append(output_neuron)
+
+			training_data_inputs.append(training_input_layer)
+			training_data_outputs.append(training_output_layer)
 
 		training_data["InputData"] = training_data_inputs
 		training_data["OutputData"] = training_data_outputs
@@ -59,7 +60,6 @@ class NeuralNetwork():
 		output_layer_depth = 0
 
 		# neural_net_file = open(filename, "r")
-
 		with open(filename, "r") as read_file:
 			data = json.load(read_file)
 
@@ -72,13 +72,13 @@ class NeuralNetwork():
 		loaded_network.initiate_neural_network(False)
 
 		for connection in data["Connections"]:
-			originating_neuron = loaded_network._neurons[int(data["Connections"][str(connection)]["Connected Neurons"][0])]
-			connected_neuron = loaded_network._neurons[int(data["Connections"][str(connection)]["Connected Neurons"][1])]
-			weight = int(data["Connections"][str(connection)]["Weight"])
-
-			new_connection = Connection(originating_neuron)
+			# originating_neuron = loaded_network._neurons[int(data["Connections"][str(connection)]["Connected Neurons"][0])]
+			# connected_neuron = loaded_network._neurons[int(data["Connections"][str(connection)]["Connected Neurons"][1])]
+			weight = float(data["Connections"][str(connection)]["Weight"])
+			new_connection = Connection(loaded_network._neurons[int(data["Connections"][str(connection)]["Connected Neurons"][0])])
 			new_connection._weight = weight
-			connected_neuron.add_incoming_connection(new_connection)
+			loaded_network._neurons[int(data["Connections"][str(connection)]["Connected Neurons"][1])].add_incoming_connection(new_connection)
+			loaded_network._connections.append(new_connection)
 
 		return(loaded_network)
 
@@ -89,11 +89,11 @@ class NeuralNetwork():
 		neural_net_file.write("\t\"Input Layer\": {\n")
 		neural_net_file.write("\t\t\"Layer Depth\": "  + str(self._input_layer_depth) + ",\n")
 		neural_net_file.write("\t\t\"Neuron Layer IDs\": {\n")
+		neural_net_file.write("\t\t\t\"0\": [")
 		for iteration, neuron in enumerate(self._input_layer):
-			neural_net_file.write("\t\t\t\"0\": [")
-			if iteration != 0:
-				neural_net_file.write(", ")
 			neural_net_file.write(str(neuron._id))
+			if iteration != len(self._input_layer) - 1:
+				neural_net_file.write(", ")
 		neural_net_file.write("]\n\t\t}\n\t},\n")
 
 		neural_net_file.write("\t\"Hidden Layers\": {\n")
@@ -116,11 +116,11 @@ class NeuralNetwork():
 		neural_net_file.write("\t\"Output Layer\": {\n")
 		neural_net_file.write("\t\t\"Layer Depth\": " + str(self._output_layer_depth) + ",\n")
 		neural_net_file.write("\t\t\"Neuron Layer IDs\": {\n")
+		neural_net_file.write("\t\t\t\"0\": [")
 		for iteration, neuron in enumerate(self._output_layer):
-			neural_net_file.write("\t\t\t\"0\": [")
-			if iteration != 0:
-				neural_net_file.write(", ")
 			neural_net_file.write(str(neuron._id))
+			if iteration != len(self._output_layer) - 1:
+				neural_net_file.write(", ")
 		neural_net_file.write("]\n\t\t}\n\t},\n")
 
 		neural_net_file.write("\t\"Connections\": {\n")
@@ -252,18 +252,17 @@ class Connection():
 	_originating_neuron = None
 	_connected_neuron = None
 
+
+neuralNet = NeuralNetwork.load_neural_net("Stuxtnet.txt")
+
+# training_data = NeuralNetwork.get_training_data("training_data.txt")
+# input_layer_depth = len(training_data["InputData"][0])
+# output_layer_depth = len(training_data["OutputData"][0])
+# neuralNet = NeuralNetwork(input_layer_depth, 3, 5, output_layer_depth)
 # neuralNet.initiate_neural_network(True)
+neuralNet.save_neural_net("Stuxtnet.txt")
 
-# neuralNet.save_neural_net("Stuxtnet.txt")
-# neuralNet = NeuralNetwork.load_neural_net("Stuxtnet.txt")
-# neuralNet._input_layer[0].fire()
 
-training_data = NeuralNetwork.get_training_data("training_data.txt")
-input_layer_depth = len(training_data["InputData"][0])
-output_layer_depth = len(training_data["OutputData"][0])
-neuralNet = NeuralNetwork(input_layer_depth, 3, 5, output_layer_depth)
-
-print(input_layer_depth, output_layer_depth)
 # class ZerglingRush(sc2.BotAI):
 # 	def __init__(self):
 # 		self.drone_counter = 0
