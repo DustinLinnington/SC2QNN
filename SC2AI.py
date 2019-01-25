@@ -179,6 +179,9 @@ class NeuralNetwork():
 					output_neuron.add_incoming_connection(connection)
 					self._connections.append(connection)
 
+	def back_propogate(self):
+		pass
+
 class Neuron():
 	def __init__(self):
 		self._accumulated_weight = 0
@@ -222,7 +225,7 @@ class Neuron():
 		return 1 / (1 + math.exp(-_accumulated_weight))
 
 	def add_outgoing_connection(self, connection):
-		if (connection not in self._outgoing_connections):
+		if (connection not in self._outgoing_connections):	
 			self._outgoing_connections.append(connection)
 
 	def add_incoming_connection(self, connection):
