@@ -179,8 +179,16 @@ class NeuralNetwork():
 					output_neuron.add_incoming_connection(connection)
 					self._connections.append(connection)
 
-	def back_propogate(self):
-		pass
+	def calculate_loss(expected_output, actual_output):
+		if len(expected_output) != len(actual_output):
+			print("Output layer size mismatch when calculating loss.")
+			return
+
+		output_loss = []
+		for neuron, output_value in enumerate(expected_output):
+			output_loss.append(math.pow(math.fabs(output_value - actual_output[neuron]), 2))
+
+		return output_loss
 
 class Neuron():
 	def __init__(self):
@@ -256,14 +264,16 @@ class Connection():
 	_connected_neuron = None
 
 
-neuralNet = NeuralNetwork.load_neural_net("Stuxtnet.txt")
+# neuralNet = NeuralNetwork.load_neural_net("Stuxtnet.txt")
 
 # training_data = NeuralNetwork.get_training_data("training_data.txt")
 # input_layer_depth = len(training_data["InputData"][0])
 # output_layer_depth = len(training_data["OutputData"][0])
 # neuralNet = NeuralNetwork(input_layer_depth, 3, 5, output_layer_depth)
 # neuralNet.initiate_neural_network(True)
-neuralNet.save_neural_net("Stuxtnet.txt")
+# neuralNet.save_neural_net("Stuxtnet.txt")
+
+print(NeuralNetwork.calculate_loss([1, 1], [1, 1, 1]))
 
 
 # class ZerglingRush(sc2.BotAI):
