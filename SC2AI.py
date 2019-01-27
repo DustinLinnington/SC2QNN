@@ -30,7 +30,7 @@ class NeuralNetwork():
 		self._connections = []
 		self._neurons = []
 
-	def get_training_data(filename):
+	def get_training_data(self, filename):
 		training_data_inputs = []
 		training_data_outputs = []
 		training_data = dict()
@@ -59,7 +59,6 @@ class NeuralNetwork():
 		hidden_layer_depth = 0
 		output_layer_depth = 0
 
-		# neural_net_file = open(filename, "r")
 		with open(filename, "r") as read_file:
 			data = json.load(read_file)
 
@@ -72,8 +71,6 @@ class NeuralNetwork():
 		loaded_network.initiate_neural_network(False)
 
 		for connection in data["Connections"]:
-			# originating_neuron = loaded_network._neurons[int(data["Connections"][str(connection)]["Connected Neurons"][0])]
-			# connected_neuron = loaded_network._neurons[int(data["Connections"][str(connection)]["Connected Neurons"][1])]
 			weight = float(data["Connections"][str(connection)]["Weight"])
 			new_connection = Connection(loaded_network._neurons[int(data["Connections"][str(connection)]["Connected Neurons"][0])])
 			new_connection._weight = weight
@@ -179,7 +176,10 @@ class NeuralNetwork():
 					output_neuron.add_incoming_connection(connection)
 					self._connections.append(connection)
 
-	def calculate_loss(expected_output, actual_output):
+	def get_result(self, inputs):
+		pass
+
+	def calculate_loss(self, expected_output, actual_output):
 		if len(expected_output) != len(actual_output):
 			print("Output layer size mismatch when calculating loss.")
 			return
@@ -189,6 +189,11 @@ class NeuralNetwork():
 			output_loss.append(math.pow(math.fabs(output_value - actual_output[neuron]), 2))
 
 		return output_loss
+
+	def learn(self, training_filename, learning_rate):
+		training_data = self.get_training_data(training_filename)
+
+		# loss = self.calculate_loss(training_data["OutputData"], self._output_layer)
 
 class Neuron():
 	def __init__(self):
@@ -272,8 +277,6 @@ class Connection():
 # neuralNet = NeuralNetwork(input_layer_depth, 3, 5, output_layer_depth)
 # neuralNet.initiate_neural_network(True)
 # neuralNet.save_neural_net("Stuxtnet.txt")
-
-print(NeuralNetwork.calculate_loss([1, 1], [1, 1, 1]))
 
 
 # class ZerglingRush(sc2.BotAI):
