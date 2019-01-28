@@ -211,6 +211,18 @@ class Neuron():
 	def update_id(self):
 		Neuron.last_id = Neuron.last_id + 1
 
+	def check_if_fire(self):
+		accumulated_weight = 0
+
+		for connection in self._incoming_connections:
+			accumulated_weight += connection._weight
+
+		if self.get_sigma(accumulated_weight + self._bias) >= 0.5:
+			#this should fire the neuron... but hopefully in a way that doesn't set a variable
+			pass
+		
+
+
 	def fire(self):
 		if (self._has_fired == True):
 			return
