@@ -30,7 +30,7 @@ class NeuralNetwork():
 		self._connections = []
 		self._neurons = []
 
-	def get_training_data(self, filename):
+	def get_training_data(filename):
 		training_data_inputs = []
 		training_data_outputs = []
 		training_data = dict()
@@ -177,7 +177,21 @@ class NeuralNetwork():
 					self._connections.append(connection)
 
 	def get_result(self, inputs):
-		pass
+		if (len(inputs) != len(self._input_layer)):
+			print ("Get Result input length and input layer mismatch")
+			return
+
+		for iteration, neuron in enumerate(self._input_layer):
+			if (inputs[iteration] == 1):
+				neuron.fire()
+
+		output_values = []
+		for neuron in self._output_layer:
+			if (neuron._has_fired):
+				output_values.append(1)
+			else:
+				output_values.append(0)
+		return output_values
 
 	def calculate_loss(self, expected_output, actual_output):
 		if len(expected_output) != len(actual_output):
@@ -212,39 +226,24 @@ class Neuron():
 		Neuron.last_id = Neuron.last_id + 1
 
 	def check_if_fire(self):
+		if (self._has_fired):
+			return
 		accumulated_weight = 0
-
 		for connection in self._incoming_connections:
-			accumulated_weight += connection._weight
+			if (connection._should_fire == True):
+				accumulated_weight += connection._weight
+				connection._should_fire = False
 
 		if self.get_sigma(accumulated_weight + self._bias) >= 0.5:
-			#this should fire the neuron... but hopefully in a way that doesn't set a variable
-			pass
+			# TODO: this should fire the neuron... but hopefully in a way that doesn't set a variable
+			self.fire()
 		
-
-
 	def fire(self):
-		if (self._has_fired == True):
-			return
+		self._has_fired = True
 		if (self._outgoing_connections is None):
 			return
-		self._has_fired = True
 		for connection in self._outgoing_connections:
 			connection.fire()
-
-	## Step-based activation function
-	# def add_weight(self, weight):
-	# 	self._accumulated_weight += weight
-	# 	if (self._accumulated_weight >= self._threshold):
-	# 		self.fire()
-
-	# Sigmoid-based activation function
-	def add_weight(self, weight):
-		self._accumulated_weight += weight
-		self._connected_neurons_fired += 1
-		if (self._connected_neurons_fired >= len(self._incoming_connections)):
-			if self.get_sigma(self._accumulated_weight + self._bias) >= 0.5:
-				self.fire()
 
 	def get_sigma(self, _accumulated_weight):
 		return 1 / (1 + math.exp(-_accumulated_weight))
@@ -257,10 +256,7 @@ class Neuron():
 		if (connection not in self._incoming_connections):
 			self._incoming_connections.append(connection)
 			connection.add_connected_neuron(self)
-	_accumulated_weight = 0
-	_has_fired = False
-	_outgoing_connections = []
-	_incoming_connections = []
+
 	_id = 0
 	last_id = -1
 
@@ -270,25 +266,29 @@ class Connection():
 		self._weight = 0.5
 		self._originating_neuron.add_outgoing_connection(self)
 		self._connected_neuron = None
+		self._should_fire = False
 
 	def fire(self):
-		self._connected_neuron.add_weight(self._weight * 1)
+		self._should_fire = True
+
+	# def get_value(self):
+	# 	return self._weight * neuron.
+
 	def add_connected_neuron(self, connected_neuron):
 		self._connected_neuron = connected_neuron
 
-	_weight = 1
-	_originating_neuron = None
-	_connected_neuron = None
-
-
 # neuralNet = NeuralNetwork.load_neural_net("Stuxtnet.txt")
-
-# training_data = NeuralNetwork.get_training_data("training_data.txt")
-# input_layer_depth = len(training_data["InputData"][0])
-# output_layer_depth = len(training_data["OutputData"][0])
-# neuralNet = NeuralNetwork(input_layer_depth, 3, 5, output_layer_depth)
-# neuralNet.initiate_neural_network(True)
 # neuralNet.save_neural_net("Stuxtnet.txt")
+
+training_data = NeuralNetwork.get_training_data("training_data.txt")
+input_layer_depth = len(training_data["InputData"][0])
+output_layer_depth = len(training_data["OutputData"][0])
+neuralNet = NeuralNetwork(input_layer_depth, 3, 5, output_layer_depth)
+neuralNet.initiate_neural_network(True)
+print(neuralNet.get_result([1, 1, 1, 1, 1, 1, 1]))
+for neuron in neuralNet._neurons:
+	print(neuron._has_fired)
+neuralNet.save_neural_net("Stuxtnet.txt")
 
 
 # class ZerglingRush(sc2.BotAI):
