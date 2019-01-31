@@ -6,6 +6,7 @@
 # import qiskit
 import json
 import math
+import numpy as np
 
 class NeuralNetwork():
 	_input_layer = []
@@ -185,6 +186,13 @@ class NeuralNetwork():
 			if (inputs[iteration] == 1):
 				neuron.fire()
 
+		for layer in self._hidden_layers:
+			for neuron in layer:
+				neuron.check_if_fire()
+
+		for neuron in self._output_layer:
+			neuron.check_if_fire()
+
 		output_values = []
 		for neuron in self._output_layer:
 			if (neuron._has_fired):
@@ -214,7 +222,6 @@ class Neuron():
 		self._accumulated_weight = 0
 		self._threshold = 1
 		self._bias = 0
-		self._neuron_value = 1
 		self._has_fired = False
 		self._outgoing_connections = []
 		self._incoming_connections = []
@@ -234,7 +241,8 @@ class Neuron():
 			if (connection._should_fire == True):
 				accumulated_weight += connection._weight
 				connection._should_fire = False
-
+		print (accumulated_weight)
+		print (self.get_sigma(accumulated_weight + self._bias))
 		if self.get_sigma(accumulated_weight + self._bias) >= 0.5:
 			# TODO: this should fire the neuron... but hopefully in a way that doesn't set a variable
 			self.fire()
@@ -247,7 +255,7 @@ class Neuron():
 			connection.fire()
 
 	def get_sigma(self, _accumulated_weight):
-		return 1 / (1 + math.exp(-_accumulated_weight))
+		return 1 / (1 + np.exp(-_accumulated_weight))
 
 	def add_outgoing_connection(self, connection):
 		if (connection not in self._outgoing_connections):	
@@ -264,7 +272,7 @@ class Neuron():
 class Connection():
 	def __init__(self, originating_neuron):
 		self._originating_neuron = originating_neuron
-		self._weight = 0.5
+		self._weight = 0.0001
 		self._originating_neuron.add_outgoing_connection(self)
 		self._connected_neuron = None
 		self._should_fire = False
