@@ -217,6 +217,11 @@ class NeuralNetwork():
 
 		# loss = self.calculate_loss(training_data["OutputData"], self._output_layer)
 
+	def visualize(self):
+		print("\nNeural Netowork")
+		print("Inputs: [" + str(len(self._input_layer)) + "]")
+		print("Hidden Layers (WxD): [" + str(self._hidden_layer_width) + ", " + str(self._hidden_layer_depth) + "]")
+		print("Outputs: [" + str(len(self._output_layer)) + "]")
 class Neuron():
 	def __init__(self):
 		self._accumulated_weight = 0
@@ -241,7 +246,6 @@ class Neuron():
 			if (connection._should_fire == True):
 				accumulated_weight += connection._weight
 				connection._should_fire = False
-		print (accumulated_weight)
 		print (self.get_sigma(accumulated_weight + self._bias))
 		if self.get_sigma(accumulated_weight + self._bias) >= 0.5:
 			# TODO: this should fire the neuron... but hopefully in a way that doesn't set a variable
@@ -255,7 +259,7 @@ class Neuron():
 			connection.fire()
 
 	def get_sigma(self, _accumulated_weight):
-		return 1 / (1 + np.exp(-_accumulated_weight))
+		return 1.0 / (1.0 + np.exp(-_accumulated_weight))
 
 	def add_outgoing_connection(self, connection):
 		if (connection not in self._outgoing_connections):	
@@ -272,7 +276,7 @@ class Neuron():
 class Connection():
 	def __init__(self, originating_neuron):
 		self._originating_neuron = originating_neuron
-		self._weight = 0.0001
+		self._weight = -0.5
 		self._originating_neuron.add_outgoing_connection(self)
 		self._connected_neuron = None
 		self._should_fire = False
@@ -298,7 +302,7 @@ print(neuralNet.get_result([1, 1, 1, 1, 1, 1, 1]))
 for neuron in neuralNet._neurons:
 	print(neuron._has_fired)
 neuralNet.save_neural_net("Stuxtnet.txt")
-
+print (neuralNet.visualize())
 
 # class ZerglingRush(sc2.BotAI):
 # 	def __init__(self):
