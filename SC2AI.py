@@ -218,10 +218,48 @@ class NeuralNetwork():
 		# loss = self.calculate_loss(training_data["OutputData"], self._output_layer)
 
 	def visualize(self):
-		print("\nNeural Netowork")
+		print("\n:::::Neural Netowork:::::")
 		print("Inputs: [" + str(len(self._input_layer)) + "]")
 		print("Hidden Layers (WxD): [" + str(self._hidden_layer_width) + ", " + str(self._hidden_layer_depth) + "]")
 		print("Outputs: [" + str(len(self._output_layer)) + "]")
+		print("\n\t\tVisualized [ID, Weight, Fired]")
+		print("\t\t-----------------------------")
+		string_to_print = "IL: "
+		for neuron in self._input_layer:
+			string_to_print += "["
+			string_to_print += str(neuron._id)
+			string_to_print += ", "
+			string_to_print += str(round(neuron._accumulated_weight, 2))
+			string_to_print += ", "
+			string_to_print += str(neuron._has_fired)[0]
+			string_to_print += "] "
+		print(string_to_print)
+
+		for index, layer in enumerate(self._hidden_layers):
+			string_to_print = "HL" + str(index) + ": "
+			for neuron in layer:
+				string_to_print += "["
+				string_to_print += str(neuron._id)
+				string_to_print += ", "
+				string_to_print += str(round(neuron._accumulated_weight, 2))
+				string_to_print += ", "
+				string_to_print += str(neuron._has_fired)[0]
+				string_to_print += "] "
+			print(string_to_print)
+
+		string_to_print = "OL: "
+		for neuron in self._output_layer:
+			string_to_print += "["
+			string_to_print += str(neuron._id)
+			string_to_print += ", "
+			string_to_print += str(round(neuron._accumulated_weight, 2))
+			string_to_print += ", "
+			string_to_print += str(neuron._has_fired)[0]
+			string_to_print += "] "
+		print(string_to_print)
+
+
+
 class Neuron():
 	def __init__(self):
 		self._accumulated_weight = 0
@@ -241,13 +279,12 @@ class Neuron():
 	def check_if_fire(self):
 		if (self._has_fired):
 			return
-		accumulated_weight = 0
 		for connection in self._incoming_connections:
 			if (connection._should_fire == True):
-				accumulated_weight += connection._weight
+				self._accumulated_weight += connection._weight
 				connection._should_fire = False
-		print (self.get_sigma(accumulated_weight + self._bias))
-		if self.get_sigma(accumulated_weight + self._bias) >= 0.5:
+		# print (self.get_sigma(self._accumulated_weight + self._bias))
+		if self.get_sigma(self._accumulated_weight + self._bias) >= 0.5:
 			# TODO: this should fire the neuron... but hopefully in a way that doesn't set a variable
 			self.fire()
 		
@@ -299,10 +336,8 @@ output_layer_depth = len(training_data["OutputData"][0])
 neuralNet = NeuralNetwork(input_layer_depth, 3, 5, output_layer_depth)
 neuralNet.initiate_neural_network(True)
 print(neuralNet.get_result([1, 1, 1, 1, 1, 1, 1]))
-for neuron in neuralNet._neurons:
-	print(neuron._has_fired)
 neuralNet.save_neural_net("Stuxtnet.txt")
-print (neuralNet.visualize())
+neuralNet.visualize()
 
 # class ZerglingRush(sc2.BotAI):
 # 	def __init__(self):
