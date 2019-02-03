@@ -6,6 +6,7 @@
 # import qiskit
 import json
 import math
+import random
 import numpy as np
 
 class NeuralNetwork():
@@ -258,8 +259,6 @@ class NeuralNetwork():
 			string_to_print += "] "
 		print(string_to_print)
 
-
-
 class Neuron():
 	def __init__(self):
 		self._accumulated_weight = 0
@@ -313,7 +312,7 @@ class Neuron():
 class Connection():
 	def __init__(self, originating_neuron):
 		self._originating_neuron = originating_neuron
-		self._weight = -0.5
+		self._weight = random.random()
 		self._originating_neuron.add_outgoing_connection(self)
 		self._connected_neuron = None
 		self._should_fire = False
