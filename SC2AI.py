@@ -295,6 +295,8 @@ class Neuron():
 			connection.fire()
 
 	def get_sigma(self, _accumulated_weight):
+		# First 1.0 is the upper bound, add any number to the weight to change x position
+		# of when the sigmoid goes from 0 to the upper bound.
 		return 1.0 / (1.0 + np.exp(-_accumulated_weight))
 
 	def add_outgoing_connection(self, connection):
@@ -312,7 +314,8 @@ class Neuron():
 class Connection():
 	def __init__(self, originating_neuron):
 		self._originating_neuron = originating_neuron
-		self._weight = random.random()
+		self._weight = 0.5
+		# self._weight = random.random()
 		self._originating_neuron.add_outgoing_connection(self)
 		self._connected_neuron = None
 		self._should_fire = False
