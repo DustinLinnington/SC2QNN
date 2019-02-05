@@ -219,18 +219,18 @@ class NeuralNetwork():
 		# loss = self.calculate_loss(training_data["OutputData"], self._output_layer)
 
 	def visualize(self):
-		print("\n:::::Neural Netowork:::::")
+		print("\n:::::Neural Network:::::")
 		print("Inputs: [" + str(len(self._input_layer)) + "]")
 		print("Hidden Layers (WxD): [" + str(self._hidden_layer_width) + ", " + str(self._hidden_layer_depth) + "]")
 		print("Outputs: [" + str(len(self._output_layer)) + "]")
-		print("\n\t\tVisualized [ID, Weight, Fired]")
-		print("\t\t-----------------------------")
+		print("\n\t\tVisualized [ID, Activated Value, Fired]")
+		print("\t\t---------------------------------------")
 		string_to_print = "IL: "
 		for neuron in self._input_layer:
 			string_to_print += "["
 			string_to_print += str(neuron._id)
 			string_to_print += ", "
-			string_to_print += str(round(neuron._accumulated_weight, 2))
+			string_to_print += str(round(neuron._activated_value, 2))
 			string_to_print += ", "
 			string_to_print += str(neuron._has_fired)[0]
 			string_to_print += "] "
@@ -242,7 +242,7 @@ class NeuralNetwork():
 				string_to_print += "["
 				string_to_print += str(neuron._id)
 				string_to_print += ", "
-				string_to_print += str(round(neuron._accumulated_weight, 2))
+				string_to_print += str(round(neuron._activated_value, 2))
 				string_to_print += ", "
 				string_to_print += str(neuron._has_fired)[0]
 				string_to_print += "] "
@@ -253,7 +253,7 @@ class NeuralNetwork():
 			string_to_print += "["
 			string_to_print += str(neuron._id)
 			string_to_print += ", "
-			string_to_print += str(round(neuron._accumulated_weight, 2))
+			string_to_print += str(round(neuron._activated_value, 2))
 			string_to_print += ", "
 			string_to_print += str(neuron._has_fired)[0]
 			string_to_print += "] "
@@ -262,6 +262,7 @@ class NeuralNetwork():
 class Neuron():
 	def __init__(self):
 		self._accumulated_weight = 0
+		self._activated_value = 0
 		self._threshold = 1
 		self._bias = 0
 		self._has_fired = False
@@ -280,11 +281,10 @@ class Neuron():
 			return
 		for connection in self._incoming_connections:
 			if (connection._should_fire == True):
-				self._accumulated_weight += connection._weight
+				self._accumulated_weight += connection.get_value()
 				connection._should_fire = False
-		# print (self.get_sigma(self._accumulated_weight + self._bias))
-		if self.get_sigma(self._accumulated_weight + self._bias) >= 0.5:
-			# TODO: this should fire the neuron... but hopefully in a way that doesn't set a variable
+		self._activated_value = self.get_sigma(self._accumulated_weight + self._bias)
+		if self._activated_value >= 0.5:
 			self.fire()
 		
 	def fire(self):
@@ -314,8 +314,8 @@ class Neuron():
 class Connection():
 	def __init__(self, originating_neuron):
 		self._originating_neuron = originating_neuron
-		self._weight = 0.5
-		# self._weight = random.random()
+		# self._weight = 0.5
+		self._weight = random.random()
 		self._originating_neuron.add_outgoing_connection(self)
 		self._connected_neuron = None
 		self._should_fire = False
@@ -323,8 +323,9 @@ class Connection():
 	def fire(self):
 		self._should_fire = True
 
-	# def get_value(self):
-	# 	return self._weight * neuron.
+	def get_value(self):
+		print(self._originating_neuron._activated_value)
+		return self._weight * self._originating_neuron._activated_value
 
 	def add_connected_neuron(self, connected_neuron):
 		self._connected_neuron = connected_neuron
