@@ -184,7 +184,8 @@ class NeuralNetwork():
 			return
 
 		for iteration, neuron in enumerate(self._input_layer):
-			if (inputs[iteration] == 1):
+			if (inputs[iteration] != 0):
+				neuron._activated_value = inputs[iteration]
 				neuron.fire()
 
 		for layer in self._hidden_layers:
@@ -264,7 +265,7 @@ class Neuron():
 		self._accumulated_weight = 0
 		self._activated_value = 0
 		self._threshold = 1
-		self._bias = 0
+		self._bias = 0.05
 		self._has_fired = False
 		self._outgoing_connections = []
 		self._incoming_connections = []
@@ -283,9 +284,9 @@ class Neuron():
 			if (connection._should_fire == True):
 				self._accumulated_weight += connection.get_value()
 				connection._should_fire = False
+		print(self._accumulated_weight)
 		self._activated_value = self.get_sigma(self._accumulated_weight + self._bias)
-		if self._activated_value >= 0.5:
-			self.fire()
+		self.fire()
 		
 	def fire(self):
 		self._has_fired = True
@@ -314,8 +315,8 @@ class Neuron():
 class Connection():
 	def __init__(self, originating_neuron):
 		self._originating_neuron = originating_neuron
-		# self._weight = 0.5
-		self._weight = random.random()
+		self._weight = -0.5
+		# self._weight = random.uniform(-1.0, 1.0)
 		self._originating_neuron.add_outgoing_connection(self)
 		self._connected_neuron = None
 		self._should_fire = False
@@ -324,7 +325,6 @@ class Connection():
 		self._should_fire = True
 
 	def get_value(self):
-		print(self._originating_neuron._activated_value)
 		return self._weight * self._originating_neuron._activated_value
 
 	def add_connected_neuron(self, connected_neuron):
@@ -338,7 +338,7 @@ input_layer_depth = len(training_data["InputData"][0])
 output_layer_depth = len(training_data["OutputData"][0])
 neuralNet = NeuralNetwork(input_layer_depth, 3, 5, output_layer_depth)
 neuralNet.initiate_neural_network(True)
-print(neuralNet.get_result([1, 1, 1, 1, 1, 1, 1]))
+print(neuralNet.get_result([1, 1, 1, 1, 0, 0, 0]))
 neuralNet.save_neural_net("Stuxtnet.txt")
 neuralNet.visualize()
 
