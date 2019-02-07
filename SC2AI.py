@@ -143,6 +143,10 @@ class NeuralNetwork():
 			input_neuron = Neuron()
 			self._input_layer.append(input_neuron)
 			self._neurons.append(input_neuron)
+		bias_neuron  = Neuron()
+		bias_neuron.make_bias()
+		self._input_layer.append(bias_neuron)
+		self._neurons.append(bias_neuron)
 
 		for layer in range(self._hidden_layer_width):
 			hidden_layer = []
@@ -150,6 +154,10 @@ class NeuralNetwork():
 				hidden_neuron = Neuron()
 				hidden_layer.append(hidden_neuron)
 				self._neurons.append(hidden_neuron)
+			bias_neuron  = Neuron()
+			bias_neuron.make_bias()
+			hidden_layer.append(bias_neuron)
+			self._neurons.append(bias_neuron)
 			self._hidden_layers.append(hidden_layer)
 
 		for neuron in range(self._output_layer_depth):
@@ -179,11 +187,14 @@ class NeuralNetwork():
 					self._connections.append(connection)
 
 	def get_result(self, inputs):
-		if (len(inputs) != len(self._input_layer)):
-			print ("Get Result input length and input layer mismatch")
-			return
+		# if (len(inputs) != len(self._input_layer)):
+		# 	print ("Get Result input length and input layer mismatch")
+		# 	return
 
 		for iteration, neuron in enumerate(self._input_layer):
+
+			if (iteration == len(self._input_layer) - 1):
+				break
 			if (inputs[iteration] != 0):
 				neuron._activated_value = inputs[iteration]
 				neuron.fire()
@@ -265,27 +276,28 @@ class Neuron():
 		self._accumulated_weight = 0
 		self._activated_value = 0
 		self._threshold = 1
-		self._bias = 0.05
 		self._has_fired = False
 		self._outgoing_connections = []
 		self._incoming_connections = []
 		self._id = Neuron.last_id + 1
-		self._connected_neurons_fired = 0
-
+		self._is_bias_node = False
 		Neuron.update_id(self)
+
+	def make_bias(self):
+		self._activated_value = 1
+		self._is_bias_node = True
 
 	def update_id(self):
 		Neuron.last_id = Neuron.last_id + 1
 
 	def check_if_fire(self):
-		if (self._has_fired):
+		if (self._has_fired or self._is_bias_node):
 			return
 		for connection in self._incoming_connections:
 			if (connection._should_fire == True):
 				self._accumulated_weight += connection.get_value()
 				connection._should_fire = False
-		print(self._accumulated_weight)
-		self._activated_value = self.get_sigma(self._accumulated_weight + self._bias)
+		self._activated_value = self.get_sigma(self._accumulated_weight)
 		self.fire()
 		
 	def fire(self):
@@ -315,8 +327,8 @@ class Neuron():
 class Connection():
 	def __init__(self, originating_neuron):
 		self._originating_neuron = originating_neuron
-		self._weight = -0.5
-		# self._weight = random.uniform(-1.0, 1.0)
+		# self._weight = -0.5
+		self._weight = random.uniform(-1.0, 1.0)
 		self._originating_neuron.add_outgoing_connection(self)
 		self._connected_neuron = None
 		self._should_fire = False
@@ -333,13 +345,14 @@ class Connection():
 # neuralNet = NeuralNetwork.load_neural_net("Stuxtnet.txt")
 # neuralNet.save_neural_net("Stuxtnet.txt")
 
-training_data = NeuralNetwork.get_training_data("training_data.txt")
-input_layer_depth = len(training_data["InputData"][0])
-output_layer_depth = len(training_data["OutputData"][0])
-neuralNet = NeuralNetwork(input_layer_depth, 3, 5, output_layer_depth)
+# training_data = NeuralNetwork.get_training_data("training_data.txt")
+# input_layer_depth = len(training_data["InputData"][0])
+# output_layer_depth = len(training_data["OutputData"][0])
+# neuralNet = NeuralNetwork(input_layer_depth, 3, 5, output_layer_depth)
+neuralNet = NeuralNetwork(2, 1, 3, 1)
 neuralNet.initiate_neural_network(True)
-print(neuralNet.get_result([1, 1, 1, 1, 0, 0, 0]))
-neuralNet.save_neural_net("Stuxtnet.txt")
+print(neuralNet.get_result([1.5, 0.5]))
+# neuralNet.save_neural_net("Stuxtnet.txt")
 neuralNet.visualize()
 
 # class ZerglingRush(sc2.BotAI):
