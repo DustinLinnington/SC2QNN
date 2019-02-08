@@ -67,6 +67,8 @@ class NeuralNetwork():
 
 		training_data["InputData"] = training_data_inputs
 		training_data["OutputData"] = training_data_outputs
+
+		data.close()
 		return training_data
 
 	def load_neural_net(filename):
@@ -245,7 +247,7 @@ class NeuralNetwork():
 		print("Hidden Layers (WxD): [" + str(self._hidden_layer_width) + ", " + str(self._hidden_layer_depth) + "]")
 		print("Outputs: [" + str(len(self._output_layer)) + "]")
 		print("\n\t\tVisualized [ID, Activated Value]")
-		print("\t\t---------------------------------------")
+		print("\t\t--------------------------------")
 		string_to_print = "IL: "
 		for neuron in self._input_layer:
 			string_to_print += "["
@@ -275,16 +277,18 @@ class NeuralNetwork():
 		print(string_to_print)
 
 class Neuron():
+	last_id = -1
+
 	def __init__(self, initial_value, activation_funtion):
 		self._activated_value = initial_value
 		self._activation_function = activation_funtion
 		self._outgoing_connections = []
 		self._incoming_connections = []
-		self._id = Neuron.last_id + 1
-		Neuron.update_id(self)
+		self._id = Neuron.update_id(self)
 
 	def update_id(self):
 		Neuron.last_id = Neuron.last_id + 1
+		return Neuron.last_id
 
 	def fire(self):
 		accumulated_weight = 0
@@ -304,13 +308,11 @@ class Neuron():
 			self._incoming_connections.append(connection)
 			connection.add_connected_neuron(self)
 
-	_id = 0
-	last_id = -1
+
 
 class Connection():
 	def __init__(self, originating_neuron):
 		self._originating_neuron = originating_neuron
-		# self._weight = 1
 		self._weight = random.uniform(-1.0, 1.0)
 		self._originating_neuron.add_outgoing_connection(self)
 		self._connected_neuron = None
