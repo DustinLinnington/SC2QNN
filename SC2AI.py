@@ -192,7 +192,6 @@ class NeuralNetwork():
 		# 	return
 
 		for iteration, neuron in enumerate(self._input_layer):
-
 			if (iteration == len(self._input_layer) - 1):
 				break
 			if (inputs[iteration] != 0):
@@ -235,7 +234,7 @@ class NeuralNetwork():
 		print("Inputs: [" + str(len(self._input_layer)) + "]")
 		print("Hidden Layers (WxD): [" + str(self._hidden_layer_width) + ", " + str(self._hidden_layer_depth) + "]")
 		print("Outputs: [" + str(len(self._output_layer)) + "]")
-		print("\n\t\tVisualized [ID, Activated Value, Fired]")
+		print("\n\t\tVisualized [ID, Activated Value, IsBias]")
 		print("\t\t---------------------------------------")
 		string_to_print = "IL: "
 		for neuron in self._input_layer:
@@ -244,7 +243,7 @@ class NeuralNetwork():
 			string_to_print += ", "
 			string_to_print += str(round(neuron._activated_value, 2))
 			string_to_print += ", "
-			string_to_print += str(neuron._has_fired)[0]
+			string_to_print += str(neuron._is_bias_node)[0]
 			string_to_print += "] "
 		print(string_to_print)
 
@@ -256,7 +255,7 @@ class NeuralNetwork():
 				string_to_print += ", "
 				string_to_print += str(round(neuron._activated_value, 2))
 				string_to_print += ", "
-				string_to_print += str(neuron._has_fired)[0]
+				string_to_print += str(neuron._is_bias_node)[0]
 				string_to_print += "] "
 			print(string_to_print)
 
@@ -267,7 +266,7 @@ class NeuralNetwork():
 			string_to_print += ", "
 			string_to_print += str(round(neuron._activated_value, 2))
 			string_to_print += ", "
-			string_to_print += str(neuron._has_fired)[0]
+			string_to_print += str(neuron._is_bias_node)[0]
 			string_to_print += "] "
 		print(string_to_print)
 
@@ -327,7 +326,7 @@ class Neuron():
 class Connection():
 	def __init__(self, originating_neuron):
 		self._originating_neuron = originating_neuron
-		# self._weight = -0.5
+		# self._weight = 1
 		self._weight = random.uniform(-1.0, 1.0)
 		self._originating_neuron.add_outgoing_connection(self)
 		self._connected_neuron = None
@@ -351,7 +350,7 @@ class Connection():
 # neuralNet = NeuralNetwork(input_layer_depth, 3, 5, output_layer_depth)
 neuralNet = NeuralNetwork(2, 1, 3, 1)
 neuralNet.initiate_neural_network(True)
-print(neuralNet.get_result([1.5, 0.5]))
+print(neuralNet.get_result([1, 1]))
 # neuralNet.save_neural_net("Stuxtnet.txt")
 neuralNet.visualize()
 
