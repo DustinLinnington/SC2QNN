@@ -8,6 +8,20 @@ import json
 import math
 import random
 import numpy as np
+from enum import Enum
+
+class Math():
+	class ActivationFunction(Enum):
+		STEP = 1
+		SIGMOID = 2
+
+	def activate(activation_function, accumulated_weight):
+		if (activation_function == Math.ActivationFunction.STEP):
+			return 1 if accumulated_weight > 0 else 0
+		elif (activation_function == Math.ActivationFunction.SIGMOID):
+			# First 1.0 is the upper bound, add any number to the weight to change x position
+			# of when the sigmoid goes from 0 to the upper bound.
+			return 1.0 / (1.0 + np.exp(-accumulated_weight))
 
 class NeuralNetwork():
 	_input_layer = []
@@ -140,28 +154,26 @@ class NeuralNetwork():
 	def initiate_neural_network(self, add_connections):
 	# Create the neurons for each layer (input, hidden and output)
 		for neuron in range(self._input_layer_depth):
-			input_neuron = Neuron()
+			input_neuron = Neuron(0, None)
 			self._input_layer.append(input_neuron)
 			self._neurons.append(input_neuron)
-		bias_neuron  = Neuron()
-		bias_neuron.make_bias()
+		bias_neuron  = Neuron(1, None)
 		self._input_layer.append(bias_neuron)
 		self._neurons.append(bias_neuron)
 
 		for layer in range(self._hidden_layer_width):
 			hidden_layer = []
 			for neuron in range(self._hidden_layer_depth):
-				hidden_neuron = Neuron()
+				hidden_neuron = Neuron(0, Math.ActivationFunction.SIGMOID)
 				hidden_layer.append(hidden_neuron)
 				self._neurons.append(hidden_neuron)
-			bias_neuron  = Neuron()
-			bias_neuron.make_bias()
+			bias_neuron  = Neuron(1, None)
 			hidden_layer.append(bias_neuron)
 			self._neurons.append(bias_neuron)
 			self._hidden_layers.append(hidden_layer)
 
 		for neuron in range(self._output_layer_depth):
-			output_neuron = Neuron()
+			output_neuron = Neuron(0, Math.ActivationFunction.STEP)
 			self._output_layer.append(output_neuron)
 			self._neurons.append(output_neuron)
 
@@ -187,30 +199,28 @@ class NeuralNetwork():
 					self._connections.append(connection)
 
 	def get_result(self, inputs):
-		# if (len(inputs) != len(self._input_layer)):
-		# 	print ("Get Result input length and input layer mismatch")
-		# 	return
+		# Add 1 for the bias neuron
+		if (len(inputs) + 1 != len(self._input_layer)):
+			print ("Get Result input length and input layer size mismatch")
+			return
 
 		for iteration, neuron in enumerate(self._input_layer):
+			# Ignore bias node at the end of the input layer
 			if (iteration == len(self._input_layer) - 1):
 				break
 			if (inputs[iteration] != 0):
 				neuron._activated_value = inputs[iteration]
-				neuron.fire()
 
 		for layer in self._hidden_layers:
 			for neuron in layer:
-				neuron.check_if_fire()
+				neuron.fire()
 
 		for neuron in self._output_layer:
-			neuron.check_if_fire()
+			neuron.fire()
 
 		output_values = []
 		for neuron in self._output_layer:
-			if (neuron._has_fired):
-				output_values.append(1)
-			else:
-				output_values.append(0)
+			output_values.append(neuron._activated_value)
 		return output_values
 
 	def calculate_loss(self, expected_output, actual_output):
@@ -234,7 +244,7 @@ class NeuralNetwork():
 		print("Inputs: [" + str(len(self._input_layer)) + "]")
 		print("Hidden Layers (WxD): [" + str(self._hidden_layer_width) + ", " + str(self._hidden_layer_depth) + "]")
 		print("Outputs: [" + str(len(self._output_layer)) + "]")
-		print("\n\t\tVisualized [ID, Activated Value, IsBias]")
+		print("\n\t\tVisualized [ID, Activated Value]")
 		print("\t\t---------------------------------------")
 		string_to_print = "IL: "
 		for neuron in self._input_layer:
@@ -242,8 +252,6 @@ class NeuralNetwork():
 			string_to_print += str(neuron._id)
 			string_to_print += ", "
 			string_to_print += str(round(neuron._activated_value, 2))
-			string_to_print += ", "
-			string_to_print += str(neuron._is_bias_node)[0]
 			string_to_print += "] "
 		print(string_to_print)
 
@@ -254,8 +262,6 @@ class NeuralNetwork():
 				string_to_print += str(neuron._id)
 				string_to_print += ", "
 				string_to_print += str(round(neuron._activated_value, 2))
-				string_to_print += ", "
-				string_to_print += str(neuron._is_bias_node)[0]
 				string_to_print += "] "
 			print(string_to_print)
 
@@ -265,51 +271,29 @@ class NeuralNetwork():
 			string_to_print += str(neuron._id)
 			string_to_print += ", "
 			string_to_print += str(round(neuron._activated_value, 2))
-			string_to_print += ", "
-			string_to_print += str(neuron._is_bias_node)[0]
 			string_to_print += "] "
 		print(string_to_print)
 
 class Neuron():
-	def __init__(self):
-		self._accumulated_weight = 0
-		self._activated_value = 0
-		self._threshold = 1
-		self._has_fired = False
+	def __init__(self, initial_value, activation_funtion):
+		self._activated_value = initial_value
+		self._activation_function = activation_funtion
 		self._outgoing_connections = []
 		self._incoming_connections = []
 		self._id = Neuron.last_id + 1
-		self._is_bias_node = False
 		Neuron.update_id(self)
-
-	def make_bias(self):
-		self._activated_value = 1
-		self._is_bias_node = True
 
 	def update_id(self):
 		Neuron.last_id = Neuron.last_id + 1
 
-	def check_if_fire(self):
-		if (self._has_fired or self._is_bias_node):
+	def fire(self):
+		accumulated_weight = 0
+		if (self._activation_function == None):
+			# Is a bias neuron
 			return
 		for connection in self._incoming_connections:
-			if (connection._should_fire == True):
-				self._accumulated_weight += connection.get_value()
-				connection._should_fire = False
-		self._activated_value = self.get_sigma(self._accumulated_weight)
-		self.fire()
-		
-	def fire(self):
-		self._has_fired = True
-		if (self._outgoing_connections is None):
-			return
-		for connection in self._outgoing_connections:
-			connection.fire()
-
-	def get_sigma(self, _accumulated_weight):
-		# First 1.0 is the upper bound, add any number to the weight to change x position
-		# of when the sigmoid goes from 0 to the upper bound.
-		return 1.0 / (1.0 + np.exp(-_accumulated_weight))
+			accumulated_weight += connection.get_value()
+		self._activated_value = Math.activate(self._activation_function, accumulated_weight)
 
 	def add_outgoing_connection(self, connection):
 		if (connection not in self._outgoing_connections):	
@@ -330,10 +314,6 @@ class Connection():
 		self._weight = random.uniform(-1.0, 1.0)
 		self._originating_neuron.add_outgoing_connection(self)
 		self._connected_neuron = None
-		self._should_fire = False
-
-	def fire(self):
-		self._should_fire = True
 
 	def get_value(self):
 		return self._weight * self._originating_neuron._activated_value
