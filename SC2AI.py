@@ -23,6 +23,19 @@ class Math():
 			# of when the sigmoid goes from 0 to the upper bound.
 			return 1.0 / (1.0 + np.exp(-accumulated_weight))
 
+	def calc_MSE(expected_output, actual_output):
+		# Calculates the mean squared error
+		if len(expected_output) != len(actual_output):
+			print("Output layer size mismatch when calculating loss.")
+			return
+
+		summation = 0
+		for neuron, output_value in enumerate(expected_output):
+			summation += math.pow(actual_output[neuron] - output_value, 2)
+
+		mse = (1 / len(expected_output)) * summation
+		return mse
+
 class NeuralNetwork():
 	_input_layer = []
 	_hidden_layers = []
@@ -225,21 +238,9 @@ class NeuralNetwork():
 			output_values.append(neuron._activated_value)
 		return output_values
 
-	def calculate_loss(self, expected_output, actual_output):
-		if len(expected_output) != len(actual_output):
-			print("Output layer size mismatch when calculating loss.")
-			return
-
-		output_loss = []
-		for neuron, output_value in enumerate(expected_output):
-			output_loss.append(math.pow(math.fabs(output_value - actual_output[neuron]), 2))
-
-		return output_loss
-
 	def learn(self, training_filename, learning_rate):
 		training_data = self.get_training_data(training_filename)
-
-		# loss = self.calculate_loss(training_data["OutputData"], self._output_layer)
+		mse = Math.calc_MSE(training_data["OutputData"], self._output_layer)
 
 	def visualize(self):
 		print("\n:::::Neural Network:::::")
@@ -308,8 +309,6 @@ class Neuron():
 			self._incoming_connections.append(connection)
 			connection.add_connected_neuron(self)
 
-
-
 class Connection():
 	def __init__(self, originating_neuron):
 		self._originating_neuron = originating_neuron
@@ -330,11 +329,13 @@ class Connection():
 # input_layer_depth = len(training_data["InputData"][0])
 # output_layer_depth = len(training_data["OutputData"][0])
 # neuralNet = NeuralNetwork(input_layer_depth, 3, 5, output_layer_depth)
-neuralNet = NeuralNetwork(2, 1, 3, 1)
-neuralNet.initiate_neural_network(True)
-print(neuralNet.get_result([1, 1]))
+# neuralNet = NeuralNetwork(2, 1, 3, 1)
+# neuralNet.initiate_neural_network(True)
+# print(neuralNet.get_result([1, 1]))
 # neuralNet.save_neural_net("Stuxtnet.txt")
-neuralNet.visualize()
+# neuralNet.visualize()
+
+print(Math.calc_MSE([41, 45, 49, 47, 44], [43.6, 44.4, 45.2, 46, 46.8]))
 
 # class ZerglingRush(sc2.BotAI):
 # 	def __init__(self):
