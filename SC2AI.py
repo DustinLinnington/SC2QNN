@@ -240,7 +240,10 @@ class NeuralNetwork():
 
 	def learn(self, training_filename, learning_rate):
 		training_data = self.get_training_data(training_filename)
-		mse = Math.calc_MSE(training_data["OutputData"], self._output_layer)
+
+		for entry in training_data["OutputData"]:
+			mse = Math.calc_MSE(training_data["OutputData"], self._output_layer)
+			# Change weights here
 
 	def visualize(self):
 		print("\n:::::Neural Network:::::")
@@ -276,6 +279,8 @@ class NeuralNetwork():
 			string_to_print += str(round(neuron._activated_value, 2))
 			string_to_print += "] "
 		print(string_to_print)
+
+
 
 class Neuron():
 	last_id = -1
