@@ -240,10 +240,17 @@ class NeuralNetwork():
 
 	def learn(self, training_filename, learning_rate):
 		training_data = self.get_training_data(training_filename)
+		learning_rate = 0.1
 
+		previous_mse = 100000
 		for entry in training_data["OutputData"]:
 			mse = Math.calc_MSE(training_data["OutputData"], self._output_layer)
-			# Change weights here
+			if mse > previous_mse:
+				self.change_weights(learning_rate)
+
+	def change_weights(self, variance):
+		for connection._weight in _connections:
+			connection._weight += variance
 
 	def visualize(self):
 		print("\n:::::Neural Network:::::")
