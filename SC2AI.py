@@ -249,7 +249,7 @@ class NeuralNetwork():
 				self.change_weights(learning_rate)
 
 	def change_weights(self, variance):
-		for connection._weight in _connections:
+		for connection in self._connections:
 			connection._weight += variance
 
 	def visualize(self):
@@ -286,8 +286,6 @@ class NeuralNetwork():
 			string_to_print += str(round(neuron._activated_value, 2))
 			string_to_print += "] "
 		print(string_to_print)
-
-
 
 class Neuron():
 	last_id = -1
@@ -341,11 +339,17 @@ class Connection():
 # input_layer_depth = len(training_data["InputData"][0])
 # output_layer_depth = len(training_data["OutputData"][0])
 # neuralNet = NeuralNetwork(input_layer_depth, 3, 5, output_layer_depth)
-# neuralNet = NeuralNetwork(2, 1, 3, 1)
-# neuralNet.initiate_neural_network(True)
+neuralNet = NeuralNetwork(2, 1, 3, 1)
+neuralNet.initiate_neural_network(True)
+
 # print(neuralNet.get_result([1, 1]))
 # neuralNet.save_neural_net("Stuxtnet.txt")
-# neuralNet.visualize()
+neuralNet.get_result([1, 1])
+neuralNet.visualize()
+neuralNet.change_weights(0.5)
+neuralNet.get_result([1, 1])
+neuralNet.visualize()
+
 
 print(Math.calc_MSE([41, 45, 49, 47, 44], [43.6, 44.4, 45.2, 46, 46.8]))
 
