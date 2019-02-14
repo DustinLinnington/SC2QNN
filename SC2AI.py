@@ -59,6 +59,8 @@ class NeuralNetwork():
 		self._connections = []
 		self._neurons = []
 
+		self.initiate_neural_network(True)
+
 	def get_training_data(filename):
 		training_data_inputs = []
 		training_data_outputs = []
@@ -81,7 +83,6 @@ class NeuralNetwork():
 		training_data["InputData"] = training_data_inputs
 		training_data["OutputData"] = training_data_outputs
 
-		data.close()
 		return training_data
 
 	def load_neural_net(filename):
@@ -216,8 +217,7 @@ class NeuralNetwork():
 	def get_result(self, inputs):
 		# Add 1 for the bias neuron
 		if (len(inputs) + 1 != len(self._input_layer)):
-			print ("Get Result input length and input layer size mismatch")
-			return
+			raise ValueError("Get Result input length and input layer size mismatch: (" + str(len(inputs)) + " vs " + str(len(self._input_layer)) + ")")
 
 		for iteration, neuron in enumerate(self._input_layer):
 			# Ignore bias node at the end of the input layer
@@ -239,14 +239,21 @@ class NeuralNetwork():
 		return output_values
 
 	def learn(self, training_filename, learning_rate):
-		training_data = self.get_training_data(training_filename)
+		training_data = NeuralNetwork.get_training_data(training_filename)
 		learning_rate = 0.1
 
-		previous_mse = 100000
-		for entry in training_data["OutputData"]:
-			mse = Math.calc_MSE(training_data["OutputData"], self._output_layer)
+		previous_mse = 0
+		index = 0
+		for entry in training_data["InputData"]:
+			outputs = self.get_result(entry)
+			mse = Math.calc_MSE(training_data["OutputData"][index], outputs)
 			if mse > previous_mse:
+				previous_mse = mse
 				self.change_weights(learning_rate)
+				if (Math.calc_MSE(training_data["OutputData"][index], outputs) >= previous_mse):
+					learning_rate *= -1
+			index += 1
+
 
 	def change_weights(self, variance):
 		for connection in self._connections:
@@ -335,23 +342,20 @@ class Connection():
 # neuralNet = NeuralNetwork.load_neural_net("Stuxtnet.txt")
 # neuralNet.save_neural_net("Stuxtnet.txt")
 
-# training_data = NeuralNetwork.get_training_data("training_data.txt")
-# input_layer_depth = len(training_data["InputData"][0])
-# output_layer_depth = len(training_data["OutputData"][0])
-# neuralNet = NeuralNetwork(input_layer_depth, 3, 5, output_layer_depth)
-neuralNet = NeuralNetwork(2, 1, 3, 1)
-neuralNet.initiate_neural_network(True)
+training_data = NeuralNetwork.get_training_data("training_data.txt")
+input_layer_depth = len(training_data["InputData"][0])
+output_layer_depth = len(training_data["OutputData"][0])
+neuralNet = NeuralNetwork(input_layer_depth, 3, 5, output_layer_depth)
+neuralNet.get_result([1, 1, 1, 1, 1, 1, 1])
+neuralNet.visualize()
+neuralNet.learn("training_data.txt", 0.1)
+neuralNet.get_result([1, 1, 1, 1, 1, 1, 1])
+neuralNet.visualize()
 
 # print(neuralNet.get_result([1, 1]))
 # neuralNet.save_neural_net("Stuxtnet.txt")
-neuralNet.get_result([1, 1])
-neuralNet.visualize()
-neuralNet.change_weights(0.5)
-neuralNet.get_result([1, 1])
-neuralNet.visualize()
 
-
-print(Math.calc_MSE([41, 45, 49, 47, 44], [43.6, 44.4, 45.2, 46, 46.8]))
+# print(Math.calc_MSE([41, 45, 49, 47, 44], [43.6, 44.4, 45.2, 46, 46.8]))
 
 # class ZerglingRush(sc2.BotAI):
 # 	def __init__(self):
