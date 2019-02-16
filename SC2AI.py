@@ -47,6 +47,8 @@ class NeuralNetwork():
 	_hidden_layer_depth = 0
 	_output_layer_depth = 0
 
+	_learning_epochs = 0
+
 	def __init__(self, input_layer_depth, hidden_layer_width, hidden_layer_depth, output_layer_depth):
 		self._input_layer_depth = input_layer_depth
 		self._hidden_layer_width = hidden_layer_width
@@ -58,6 +60,8 @@ class NeuralNetwork():
 		self._output_layer = []
 		self._connections = []
 		self._neurons = []
+
+		self._learning_epochs = 0
 
 		self.initiate_neural_network(True)
 
@@ -253,7 +257,6 @@ class NeuralNetwork():
 				if (Math.calc_MSE(training_data["OutputData"][index], outputs) >= previous_mse):
 					learning_rate *= -1
 			index += 1
-
 
 	def change_weights(self, variance):
 		for connection in self._connections:
