@@ -36,6 +36,9 @@ class Math():
 		mse = (1 / len(expected_output)) * summation
 		return mse
 
+	def calc_derivative(weight):
+		pass
+
 class NeuralNetwork():
 	_input_layer = []
 	_hidden_layers = []
