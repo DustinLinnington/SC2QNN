@@ -181,33 +181,3 @@ class NeuralNetwork:
 		predictedOutput = networkData["A" + str(len(self._networkLayers) - 1)]
 		np.squeeze(predictedOutput)
 		return predictedOutput
-
-
-
-# inputData = np.array([[0, 3, 1, 6, 2, 1, 6],
-# 					  [2, 2, 2, 6, 7, 1, 0],
-# 					  [2, 3, 6, 1, 2, 9, 7]])
-
-# np.random.seed(1)
-# inputData = np.sin(np.random.randn(1, 10))
-# outputData = np.cos(inputData)
-
-# networkLayers = np.array([1, 3, 2, 2, 1])
-# neuralNet = NeuralNetwork(networkLayers)
-# neuralNet.train_network(inputData, outputData, 0.09, 100)
-# predict = np.sin(np.array([[153]]))
-# print("Prediction 1: ", neuralNet.predict(predict))
-# print("Actual Result Should Be: ", str(np.cos(predict)))
-
-# neuralNet.train_network(inputData, outputData, 0.09, 1000)
-# print("Prediction 2: ", neuralNet.predict(predict))
-# print("Actual Result Should Be: ", str(np.cos(predict)))
-
-
-
-# neuralNet.save_network("neuralNet.json")
-
-neuralNet = NeuralNetwork.load_network("neuralNet.json")
-predict = np.sin(np.array([[153]]))
-print("Prediction 2: ", neuralNet.predict(predict))
-print("Actual Result Should Be: ", str(np.cos(predict)))
