@@ -1,4 +1,5 @@
 import numpy as np
+import json
 from enum import Enum
 
 class Math:
@@ -52,7 +53,6 @@ class Math:
 		else:
 			return relu
 
-
 	@staticmethod
 	def calc_cost(trueOutputData, calculatedOutputData):
 		m = trueOutputData.shape[1]
@@ -67,18 +67,38 @@ class NeuralNetwork:
 	_networkData = 0
 	_networkLayers = 0
 
-	def __init__(self, networkLayers, fileName = 0):
-		self._parameters = 0
-		if (fileName != 0):
-			self.load_network(fileName)
-		else:
-			self._networkLayers = networkLayers
+	def __init__(self, networkLayers):
+		self._networkData = 0
+		self._networkLayers = networkLayers
 
-	def load_network(self, fileName):
-		pass
+	@staticmethod
+	def load_network(fileName, networkLayers = 0):
+		jsonData = ""
+		with open(fileName, "r") as readFile:
+			jsonData = json.load(readFile)
+
+		networkLayers = jsonData["NetworkLayers"]
+		neuralNet = NeuralNetwork(networkLayers)
+		del jsonData["NetworkLayers"]
+
+		for obj in jsonData:
+			if isinstance(jsonData[obj], list):
+				jsonData[obj] = np.array(jsonData[obj])
+
+		neuralNet._networkData = jsonData
+		return neuralNet
 
 	def save_network(self, fileName):
-		pass
+		jsonData = self._networkData
+		jsonData["NetworkLayers"] = self._networkLayers
+		# Convert all our numpy arrays into lists so it can be JSONified
+		for obj in jsonData:
+			if isinstance(jsonData[obj], np.ndarray):
+				jsonData[obj] = jsonData[obj].tolist()
+
+		with open(fileName, "w") as writeFile:
+			json.dump(jsonData, writeFile)
+			print("Neural Network data saved to " + fileName)
 
 	def initialize_network(self):
 		"""
@@ -111,10 +131,10 @@ class NeuralNetwork:
 			# Activation function of the last layer is sigmoid so we can get a value from 0 to 1
 			if (l == len(self._networkLayers) - 1):
 				networkData["A" + str(l)] = Math.calc_A(self._networkData["Z" + str(l)], Math.ActivationFunction.SIGMOID)
-				networkData["Z" + str(l) + ":activation"] = Math.ActivationFunction.SIGMOID
+				networkData["Z" + str(l) + ":activation"] = Math.ActivationFunction.SIGMOID.value
 			else:
 				networkData["A" + str(l)] = Math.calc_A(self._networkData["Z" + str(l)], Math.ActivationFunction.RELU)
-				networkData["Z" + str(l) + ":activation"] = Math.ActivationFunction.RELU
+				networkData["Z" + str(l) + ":activation"] = Math.ActivationFunction.RELU.value
 
 		return networkData
 
@@ -163,17 +183,31 @@ class NeuralNetwork:
 		return predictedOutput
 
 
-np.random.seed(1)
-inputData = np.sin(np.random.randn(1, 10000))
-outputData = np.cos(inputData)
-networkLayers = np.array([1, 5, 3, 2, 1])
 
-neuralNet = NeuralNetwork(networkLayers)
-neuralNet.train_network(inputData, outputData, 0.009, 1000)
-predict = np.sin(np.array([[1.904 * 0.001]]))
-print("Prediction 1: ", neuralNet.predict(predict))
-print("Actual Result Should Be: ", str(np.cos(predict)))
+# inputData = np.array([[0, 3, 1, 6, 2, 1, 6],
+# 					  [2, 2, 2, 6, 7, 1, 0],
+# 					  [2, 3, 6, 1, 2, 9, 7]])
 
-neuralNet.train_network(inputData, outputData, 0.009, 10000)
+# np.random.seed(1)
+# inputData = np.sin(np.random.randn(1, 10))
+# outputData = np.cos(inputData)
+
+# networkLayers = np.array([1, 3, 2, 2, 1])
+# neuralNet = NeuralNetwork(networkLayers)
+# neuralNet.train_network(inputData, outputData, 0.09, 100)
+# predict = np.sin(np.array([[153]]))
+# print("Prediction 1: ", neuralNet.predict(predict))
+# print("Actual Result Should Be: ", str(np.cos(predict)))
+
+# neuralNet.train_network(inputData, outputData, 0.09, 1000)
+# print("Prediction 2: ", neuralNet.predict(predict))
+# print("Actual Result Should Be: ", str(np.cos(predict)))
+
+
+
+# neuralNet.save_network("neuralNet.json")
+
+neuralNet = NeuralNetwork.load_network("neuralNet.json")
+predict = np.sin(np.array([[153]]))
 print("Prediction 2: ", neuralNet.predict(predict))
 print("Actual Result Should Be: ", str(np.cos(predict)))
