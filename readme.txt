@@ -1,5 +1,5 @@
 /************ NEURAL NETWORK ************\
--         Created May 07th, 2019		 -
+-         Created Aug 24, 2019	    	 -
 -         Created By: Dustin Daon        -
 -     Contact: Dustin.Daon@gmail.com     -
 ------------------------------------------
@@ -13,17 +13,17 @@ neurons per layer. Ex: A network with 3 hidden layers containing
 would look like: [5, 4, 4, 4, 1]
 
 To train it, it only requires that you give it:
-1) a numpy array of n x m dimensions where n = number of inputs and 
+1) Input Array: a numpy array of n x m dimensions where n = number of inputs and 
 m = training examples,
-2) a numpy array containing the results of the training examples
+2) Output Array: a numpy array containing the results of the training examples
 (with a shape of [output neurons, training examples])
-3) a learing rate. The higher the number the 'faster' it learns,
+3) Hyperparameter: a learing rate. The higher the number the 'faster' it learns,
 but too high of a number and it can overshoot the correctness of
 its predictions which would result in a poorly trained network
 (a good value for this would be 0.0075 - 0.09)
-4) number of training iterations. The higher the number, the better
-it will learning your training set. However, this will take more
-time and you run the risk of it overfitting the training set if
+4) Hyperparameter: number of training iterations. The higher the number, the better
+it will learn your training set. However, this will take more
+time and you run the risk of it overfitting to the training set if
 this number is too high.
 
 After training, you can save the neural network to a JSON file
